@@ -1,0 +1,298 @@
+███████████████, [02/06/2026 01:32 ص]
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ismail - API & Server</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: #000;
+        }
+        
+        /* Video Background */
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+        
+        /* Overlay for readability */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+        
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 30px 0;
+        }
+        
+        .header h1 {
+            color: #fff;
+            font-size: 2.5rem;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
+            to { text-shadow: 0 0 30px rgba(0, 255, 255, 1), 0 0 50px rgba(0, 255, 255, 0.5); }
+        }
+        
+        /* Data Cards */
+        .data-section {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        .data-card {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            width: 350px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .data-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+        }
+        
+        .data-card h2 {
+            color: #00ffff;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+            padding-bottom: 10px;
+        }
+        
+        .data-card pre {
+            color: #00ff88;
+            font-size: 0.75rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .data-card pre::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        .data-card pre::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 255, 0.5);
+            border-radius: 5px;
+        }
+        
+        /* Tree and Icons Section */
+        .tree-section {
+            position: relative;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            margin-top: 30px;
+        }
+        
+        .tree-container {
+            position: relative;
+            width: 200px;
+            height: 250px;
+        }
+        
+        .tree-img {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+
+███████████████, [02/06/2026 01:32 ص]
+transform: translateX(-50%);
+            width: 150px;
+            height: auto;
+            z-index: 2;
+            filter: drop-shadow(0 0 10px rgba(0, 255, 0, 0.5));
+        }
+        
+        /* Orbiting Icons */
+        .orbit-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            z-index: 1;
+        }
+        
+        .orbit-icon {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            animation: orbit var(--duration) linear infinite;
+            animation-delay: var(--delay);
+        }
+        
+        .orbit-icon:nth-child(1) { --duration: 8s; --delay: 0s; --radius: 120px; }
+        .orbit-icon:nth-child(2) { --duration: 10s; --delay: -2s; --radius: 140px; }
+        .orbit-icon:nth-child(3) { --duration: 12s; --delay: -4s; --radius: 100px; }
+        .orbit-icon:nth-child(4) { --duration: 9s; --delay: -1s; --radius: 130px; }
+        .orbit-icon:nth-child(5) { --duration: 11s; --delay: -3s; --radius: 110px; }
+        .orbit-icon:nth-child(6) { --duration: 7s; --delay: -5s; --radius: 150px; }
+        .orbit-icon:nth-child(7) { --duration: 13s; --delay: -6s; --radius: 90px; }
+        .orbit-icon:nth-child(8) { --duration: 14s; --delay: -7s; --radius: 160px; }
+        
+        @keyframes orbit {
+            0% { transform: rotate(0deg) translateX(var(--radius)) rotate(0deg); }
+            100% { transform: rotate(360deg) translateX(var(--radius)) rotate(-360deg); }
+        }
+        
+        .icon-js { background: #f7df1e; color: #000; }
+        .icon-py { background: #3776ab; }
+        .icon-html { background: #e34c26; }
+        .icon-css { background: #264de4; }
+        .icon-php { background: #777bb4; }
+        .icon-java { background: #007396; }
+        .icon-cpp { background: #00599c; }
+        .icon-go { background: #00add8; }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .data-section {
+                flex-direction: column;
+                align-items: center;
+            }
+            .data-card {
+                width: 90%;
+            }
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Video Background -->
+    <video class="video-bg" autoplay muted loop playsinline>
+        <source src="https://files.catbox.moe/z3yu12.mp4" type="video/mp4">
+    </video>
+    
+    <!-- Overlay -->
+    <div class="overlay"></div>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🌐 Ismail Server & API</h1>
+        </div>
+        
+        <!-- Data Cards -->
+        <div class="data-section">
+            <!-- API Data Card -->
+            <div class="data-card">
+                <h2>📡 API Data</h2>
+                <pre>URL: https://api.internal.temp-mail.io/api/v3/email/new
+
+Method: POST
+
+Content-Type: application/json
+
+Payload: {}</pre>
+            </div>
+            
+            <!-- Server Data Card -->
+            <div class="data-card">
+                <h2>🖥️ Server Data</h2>
+                <pre>Host: api.internal.temp-mail.io
+Origin: https://temp-mail.io
+Referer: https://temp-mail.io/
+Connection: keep-alive
+
+███████████████, [02/06/2026 01:32 ص]
+Accept: */*
+Accept-Encoding: gzip, deflate, br
+Accept-Language: ar-EG,ar;q=0.9,en-US;q=0.8,en;q=0.7</pre>
+            </div>
+        </div>
+        
+        <!-- Tree Section with Orbiting Icons -->
+        <div class="tree-section">
+            <div class="tree-container">
+                <!-- Orbiting Programming Icons -->
+                <div class="orbit-container">
+                    <div class="orbit-icon icon-js">JS</div>
+                    <div class="orbit-icon icon-py">Py</div>
+                    <div class="orbit-icon icon-html">H5</div>
+                    <div class="orbit-icon icon-css">C3</div>
+                    <div class="orbit-icon icon-php">PHP</div>
+                    <div class="orbit-icon icon-java">Ja</div>
+                    <div class="orbit-icon icon-cpp">C++</div>
+                    <div class="orbit-icon icon-go">Go</div>
+                </div>
+                
+                <!-- Tree Image -->
+                <img class="tree-img" src="https://static.vecteezy.com/system/resources/thumbnails/022/276/627/small/small-tree-transparent-background-png.png" alt="Small Tree">
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2026 Ismail Server | Created with ❤️</p>
+        </div>
+    </div>
+</body>
+</html>
