@@ -1,24 +1,25 @@
-███████████████, [02/06/2026 01:32 ص]
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ismail - API & Server</title>
+    <title>بريد مؤقت</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
-            background: #000;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+            color: white;
         }
-        
-        /* Video Background */
+
+        /* خلفية الفيديو */
         .video-bg {
             position: fixed;
             top: 0;
@@ -26,273 +27,474 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: 0;
+            z-index: -1;
         }
-        
-        /* Overlay for readability */
+
         .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+
+        /* المحتوى الرئيسي */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
             z-index: 1;
         }
-        
-        /* Main Container */
-        .container {
-            position: relative;
-            z-index: 2;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 20px;
-        }
-        
-        /* Header */
-        .header {
+
+        h1 {
             text-align: center;
-            padding: 30px 0;
-        }
-        
-        .header h1 {
-            color: #fff;
             font-size: 2.5rem;
-            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
-            animation: glow 2s ease-in-out infinite alternate;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
-        
-        @keyframes glow {
-            from { text-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
-            to { text-shadow: 0 0 30px rgba(0, 255, 255, 1), 0 0 50px rgba(0, 255, 255, 0.5); }
-        }
-        
-        /* Data Cards */
-        .data-section {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-            margin: 20px 0;
-        }
-        
-        .data-card {
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            border-radius: 15px;
-            padding: 25px;
-            width: 350px;
+
+        .email-box {
+            background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-            transition: transform 0.3s ease;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
-        .data-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+
+        .email-display {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 20px;
+            font-family: monospace;
+            word-break: break-all;
         }
-        
-        .data-card h2 {
-            color: #00ffff;
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
-            padding-bottom: 10px;
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 5px;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
-        
-        .data-card pre {
-            color: #00ff88;
-            font-size: 0.75rem;
-            line-height: 1.6;
-            overflow-x: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            max-height: 300px;
-            overflow-y: auto;
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
         }
-        
-        .data-card pre::-webkit-scrollbar {
-            width: 5px;
+
+        .btn-copy {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
         }
-        
-        .data-card pre::-webkit-scrollbar-thumb {
-            background: rgba(0, 255, 255, 0.5);
-            border-radius: 5px;
+
+        .btn-refresh {
+            background: linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%);
         }
-        
-        /* Tree and Icons Section */
-        .tree-section {
-            position: relative;
-            height: 300px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            margin-top: 30px;
+
+        /* رسائل البريد */
+        .messages-box {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-height: 300px;
         }
-        
-        .tree-container {
-            position: relative;
-            width: 200px;
-            height: 250px;
+
+        .message-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
         }
-        
-        .tree-img {
+
+        .message-item:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .message-sender {
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .message-subject {
+            margin-top: 5px;
+            color: #e0e0e0;
+        }
+
+        .message-time {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* شجرة ولغات البرمجة */
+        .footer-animation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .tree {
             position: absolute;
             bottom: 0;
             left: 50%;
-
-███████████████, [02/06/2026 01:32 ص]
-transform: translateX(-50%);
-            width: 150px;
-            height: auto;
-            z-index: 2;
-            filter: drop-shadow(0 0 10px rgba(0, 255, 0, 0.5));
+            transform: translateX(-50%);
+            font-size: 80px;
+            animation: treeSway 3s ease-in-out infinite;
         }
-        
-        /* Orbiting Icons */
+
+        @keyframes treeSway {
+            0%, 100% { transform: translateX(-50%) rotate(-2deg); }
+            50% { transform: translateX(-50%) rotate(2deg); }
+        }
+
         .orbit-container {
             position: absolute;
-            top: 50%;
+            bottom: 60px;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
             width: 300px;
             height: 300px;
-            z-index: 1;
         }
-        
-        .orbit-icon {
+
+        .orbit-item {
             position: absolute;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: bold;
-            color: white;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-            animation: orbit var(--duration) linear infinite;
-            animation-delay: var(--delay);
+            font-size: 30px;
+            animation: orbit 8s linear infinite;
         }
-        
-        .orbit-icon:nth-child(1) { --duration: 8s; --delay: 0s; --radius: 120px; }
-        .orbit-icon:nth-child(2) { --duration: 10s; --delay: -2s; --radius: 140px; }
-        .orbit-icon:nth-child(3) { --duration: 12s; --delay: -4s; --radius: 100px; }
-        .orbit-icon:nth-child(4) { --duration: 9s; --delay: -1s; --radius: 130px; }
-        .orbit-icon:nth-child(5) { --duration: 11s; --delay: -3s; --radius: 110px; }
-        .orbit-icon:nth-child(6) { --duration: 7s; --delay: -5s; --radius: 150px; }
-        .orbit-icon:nth-child(7) { --duration: 13s; --delay: -6s; --radius: 90px; }
-        .orbit-icon:nth-child(8) { --duration: 14s; --delay: -7s; --radius: 160px; }
-        
+
+        .orbit-item:nth-child(1) { animation-delay: 0s; }
+        .orbit-item:nth-child(2) { animation-delay: -1.6s; }
+        .orbit-item:nth-child(3) { animation-delay: -3.2s; }
+        .orbit-item:nth-child(4) { animation-delay: -4.8s; }
+        .orbit-item:nth-child(5) { animation-delay: -6.4s; }
+
         @keyframes orbit {
-            0% { transform: rotate(0deg) translateX(var(--radius)) rotate(0deg); }
-            100% { transform: rotate(360deg) translateX(var(--radius)) rotate(-360deg); }
+            0% { transform: rotate(0deg) translateX(120px) rotate(0deg); }
+            100% { transform: rotate(360deg) translateX(120px) rotate(-360deg); }
         }
-        
-        .icon-js { background: #f7df1e; color: #000; }
-        .icon-py { background: #3776ab; }
-        .icon-html { background: #e34c26; }
-        .icon-css { background: #264de4; }
-        .icon-php { background: #777bb4; }
-        .icon-java { background: #007396; }
-        .icon-cpp { background: #00599c; }
-        .icon-go { background: #00add8; }
-        
-        /* Footer */
-        .footer {
+
+        .loading {
+            display: none;
             text-align: center;
             padding: 20px;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9rem;
         }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .data-section {
-                flex-direction: column;
-                align-items: center;
-            }
-            .data-card {
-                width: 90%;
-            }
-            .header h1 {
-                font-size: 1.8rem;
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* نافذة عرض الرسالة */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(30, 30, 50, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .modal-close {
+            float: left;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #ff6b6b;
+        }
+
+        .modal-body {
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 200, 0, 0.9);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            transform: translateX(150%);
+            transition: transform 0.3s;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.5rem; }
+            .orbit-container { width: 200px; height: 200px; }
+            .orbit-item { font-size: 24px; }
+            @keyframes orbit {
+                0% { transform: rotate(0deg) translateX(80px) rotate(0deg); }
+                100% { transform: rotate(360deg) translateX(80px) rotate(-360deg); }
             }
         }
     </style>
 </head>
 <body>
-    <!-- Video Background -->
+    <!-- خلفية الفيديو -->
     <video class="video-bg" autoplay muted loop playsinline>
         <source src="https://files.catbox.moe/z3yu12.mp4" type="video/mp4">
     </video>
-    
-    <!-- Overlay -->
     <div class="overlay"></div>
-    
-    <!-- Main Container -->
+
+    <!-- المحتوى -->
     <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>🌐 Ismail Server & API</h1>
-        </div>
+        <h1>📧 بريد مؤقت</h1>
         
-        <!-- Data Cards -->
-        <div class="data-section">
-            <!-- API Data Card -->
-            <div class="data-card">
-                <h2>📡 API Data</h2>
-                <pre>URL: https://api.internal.temp-mail.io/api/v3/email/new
-
-Method: POST
-
-Content-Type: application/json
-
-Payload: {}</pre>
+        <div class="email-box">
+            <div class="email-display" id="emailDisplay">جاري إنشاء البريد...</div>
+            <div style="text-align: center;">
+                <button class="btn" onclick="generateEmail()">🔄 إنشاء بريد جديد</button>
+                <button class="btn btn-copy" onclick="copyEmail()">📋 نسخ</button>
+                <button class="btn btn-refresh" onclick="refreshMessages()">🔄 تحديث الرسائل</button>
             </div>
-            
-            <!-- Server Data Card -->
-            <div class="data-card">
-                <h2>🖥️ Server Data</h2>
-                <pre>Host: api.internal.temp-mail.io
-Origin: https://temp-mail.io
-Referer: https://temp-mail.io/
-Connection: keep-alive
-
-███████████████, [02/06/2026 01:32 ص]
-Accept: */*
-Accept-Encoding: gzip, deflate, br
-Accept-Language: ar-EG,ar;q=0.9,en-US;q=0.8,en;q=0.7</pre>
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <div>جاري التحميل...</div>
             </div>
         </div>
-        
-        <!-- Tree Section with Orbiting Icons -->
-        <div class="tree-section">
-            <div class="tree-container">
-                <!-- Orbiting Programming Icons -->
-                <div class="orbit-container">
-                    <div class="orbit-icon icon-js">JS</div>
-                    <div class="orbit-icon icon-py">Py</div>
-                    <div class="orbit-icon icon-html">H5</div>
-                    <div class="orbit-icon icon-css">C3</div>
-                    <div class="orbit-icon icon-php">PHP</div>
-                    <div class="orbit-icon icon-java">Ja</div>
-                    <div class="orbit-icon icon-cpp">C++</div>
-                    <div class="orbit-icon icon-go">Go</div>
+
+        <div class="messages-box">
+            <h2 style="margin-bottom: 20px; text-align: center;">📨 الرسائل الواردة</h2>
+            <div id="messagesList">
+                <div class="empty-state">
+                    <div style="font-size: 3rem; margin-bottom: 10px;">📭</div>
+                    <div>لا توجد رسائل بعد</div>
+                    <div style="font-size: 0.9rem; margin-top: 10px;">ستظهر الرسائل هنا تلقائياً</div>
                 </div>
-                
-                <!-- Tree Image -->
-                <img class="tree-img" src="https://static.vecteezy.com/system/resources/thumbnails/022/276/627/small/small-tree-transparent-background-png.png" alt="Small Tree">
             </div>
-        </div>
-        
-        <!-- Footer -->
-        <div class="footer">
-            <p>© 2026 Ismail Server | Created with ❤️</p>
         </div>
     </div>
+
+    <!-- شجرة ولغات البرمجة -->
+    <div class="footer-animation">
+        <div class="orbit-container">
+            <div class="orbit-item" title="HTML">🌐</div>
+            <div class="orbit-item" title="CSS">🎨</div>
+            <div class="orbit-item" title="JavaScript">⚡</div>
+            <div class="orbit-item" title="Python">🐍</div>
+            <div class="orbit-item" title="Node.js">🟢</div>
+        </div>
+        <div class="tree">🌲</div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="messageModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <h3 id="modalSubject"></h3>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">تم النسخ!</div>
+
+    <script>
+        let currentEmail = '';
+        let emailToken = '';
+        let refreshInterval = null;
+
+        // عند تحميل الصفحة
+        window.onload = function() {
+            generateEmail();
+        };
+
+        // إنشاء بريد جديد
+        async function generateEmail() {
+            showLoading(true);
+            try {
+                const response = await fetch('/api/email/new', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const data = await response.json();
+                
+                if (data.email) {
+                    currentEmail = data.email;
+                    emailToken = data.token || '';
+                    document.getElementById('emailDisplay').textContent = currentEmail;
+                    showToast('✅ تم إنشاء البريد بنجاح');
+                    refreshMessages();
+                    
+                    // تحديث تلقائي كل 10 ثواني
+                    if (refreshInterval) clearInterval(refreshInterval);
+                    refreshInterval = setInterval(refreshMessages, 10000);
+                } else {
+                    throw new Error('لم يتم استلام بريد');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('emailDisplay').textContent = '❌ حدث خطأ، حاول مرة أخرى';
+                showToast('❌ فشل في إنشاء البريد');
+            }
+            showLoading(false);
+        }
+
+        // نسخ البريد
+        function copyEmail() {
+            if (!currentEmail) return;
+            navigator.clipboard.writeText(currentEmail).then(() => {
+                showToast('📋 تم نسخ البريد!');
+            });
+        }
+
+        // تحديث الرسائل
+        async function refreshMessages() {
+            if (!currentEmail) return;
+            
+            try {
+                const response = await fetch(`/api/email/${currentEmail}/messages`);
+                const messages = await response.json();
+                
+                displayMessages(messages);
+            } catch (error) {
+                console.error('Error fetching messages:', error);
+            }
+        }
+
+        // عرض الرسائل
+        function displayMessages(messages) {
+            const container = document.getElementById('messagesList');
+            
+            if (!messages || messages.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 3rem; margin-bottom: 10px;">📭</div>
+                        <div>لا توجد رسائل بعد</div>
+                        <div style="font-size: 0.9rem; margin-top: 10px;">ستظهر الرسائل هنا تلقائياً</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = messages.map((msg, index) => `
+                <div class="message-item" onclick="showMessage(${index})">
+                    <div class="message-sender">${msg.from || 'مرسل غير معروف'}</div>
+                    <div class="message-subject">${msg.subject || 'بدون عنوان'}</div>
+                    <div class="message-time">${formatDate(msg.created_at || msg.date)}</div>
+                </div>
+            `).join('');
+
+            // حفظ الرسائل في متغير عالمي للوصول إليها لاحقاً
+            window.currentMessages = messages;
+        }
+
+        // عرض رسالة محددة
+        function showMessage(index) {
+            const msg = window.currentMessages[index];
+            if (!msg) return;
+
+            document.getElementById('modalSubject').textContent = msg.subject || 'بدون عنوان';
+            document.getElementById('modalBody').innerHTML = `
+                <p><strong>من:</strong> ${msg.from || 'غير معروف'}</p>
+                <p><strong>إلى:</strong> ${msg.to || currentEmail}</p>
+                <p><strong>التاريخ:</strong> ${formatDate(msg.created_at || msg.date)}</p>
+                <hr style="margin: 15px 0; border-color: rgba(255,255,255,0.2);">
+                <div>${msg.body || msg.html_body || 'لا يوجد محتوى'}</div>
+            `;
+            document.getElementById('messageModal').classList.add('active');
+        }
+
+        // إغلاق النافذة
+        function closeModal() {
+            document.getElementById('messageModal').classList.remove('active');
+        }
+
+        // تنسيق التاريخ
+        function formatDate(dateString) {
+            if (!dateString) return 'تاريخ غير معروف';
+            const date = new Date(dateString);
+            return date.toLocaleString('ar-EG');
+        }
+
+        // إظهار/إخفاء التحميل
+        function showLoading(show) {
+            document.getElementById('loading').classList.toggle('active', show);
+        }
+
+        // Toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // إغلاق الـ Modal عند النقر خارجها
+        document.getElementById('messageModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // ESC لإغلاق الـ Modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
 </body>
 </html>
